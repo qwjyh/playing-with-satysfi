@@ -1,0 +1,75 @@
+@require: stdjabook
+
+@require: base/result
+
+let-inline \show-string s = embed-string s
+
+let result = Ok(`ok text`)
+let result2 = Err(`err text`)
+let result3 = Ok([[`1`]])
+let result4 = Err(`err`)
+
+let ok-test r =
+  if (Result.is-ok r) then
+    `Ok`
+  else
+    `Err`
+
+let changestring s =
+  ``|||` |`` ^ s
+
+let map-or-test r =
+  Result.map-or `error` changestring r
+
+
+
+let-rec stringlist2-to-string l =
+  let-rec stringlist-to-string l =
+    match l with
+    | []      -> ` `
+    | x :: xs -> x ^ (stringlist-to-string xs) in
+  match l with
+  | []      -> ` `
+  | x :: xs -> (stringlist-to-string x) ^ (stringlist2-to-string xs)
+
+let map-or-test2 r =
+  Result.map-or `it's error` stringlist2-to-string r
+
+in
+
+document (|
+  title = {result test};
+  author = {qwjyh};
+  show-title = true;
+  show-toc = true;
+|) '<
+  +section {test} <
+    +p {
+      test
+    }
+  >
+  +section {test2} <
+    +p {
+      \show-string(ok-test result);
+    }
+    +p {
+      \show-string(ok-test result2);
+    }
+    +p {
+      \show-string(ok-test result3);
+      \show-string(ok-test result4);
+    }
+  >
+  +section {test3} <
+    +p {
+      \show-string(map-or-test result);
+    }
+    +p {
+      \show-string(map-or-test result2);
+    }
+    +p {
+      \show-string(map-or-test2 result3);
+      \show-string(map-or-test2 result4);
+    }
+  >
+>

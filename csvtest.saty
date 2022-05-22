@@ -1,0 +1,103 @@
+@require: stdjabook
+
+@require: base/result
+@require: csv/csv
+
+let-inline ctx \double it = 
+  let fsize = get-font-size ctx in
+  let new-ctx = ctx |> set-font-size (fsize *' 2.) in
+  read-inline new-ctx it
+
+let csv = `1,2,3
+a,"b
+c",""d",e",f""`
+% let csv = ` `
+
+let csv-data = CSV.parser csv
+% =>
+%Ok([
+%  [`1`; `2`; `3`];
+%  [`a`; `b
+%c`; `d",e",f`]
+%])
+
+let csv-data2 = Ok([[`1`]])
+
+
+let-inline \show-float x = embed-string (show-float x) 
+let-inline \show-string s = embed-string s
+
+let pi = 3.1415926535
+
+let length-abs len =
+  if len <' 0pt then 0pt -' len else len
+
+
+type geometry =
+  | Rectangle of (length * length) * (length * length)
+  | Circle    of (length * length) * length
+
+let area geom =
+  match geom with
+  | Rectangle((x1, y1), (x2, y2)) ->
+      let w = (length-abs (x1 -' x2) /' 1cm) in
+      let h = (length-abs (y1 -' y2) /' 1cm) in
+        w *. h
+  | Circle(_, r) ->
+      let rf = r /' 1cm in
+        rf *. rf *. pi
+
+
+let-rec list-length l =
+  match l with
+  | []      -> 0
+  | x :: xs -> 1 + list-length xs
+
+let-rec stringlist-to-string l =
+  match l with
+  | []      -> ` `
+  | x :: xs -> x ^ #` `# ^ (stringlist-to-string xs) 
+
+let-rec stringlist2-to-string l =
+  match l with
+  | []      -> ` `
+  | x :: xs -> (stringlist-to-string x) ^ #`   `# ^ (stringlist2-to-string xs)
+
+let csvresult-to-stringlist r =
+  Result.map-or `error` stringlist2-to-string r
+
+
+
+
+in
+
+document (|
+  title = {CSV test};
+  author = {qwjyh};
+  show-title = true;
+  show-toc = true;
+|) '<
+  +section{test} <
+    +p {
+      \double{ああ}いい
+    }
+    +p {
+      Answer: \show-float(area (Rectangle((1cm, 2.4cm), (-3cm, 10cm))));
+    }
+    +p {
+      Answer: \show-float(area (Circle((5cm, 0cm), 2cm)));
+    }
+    +p {
+      csv-data
+    }
+    +p {
+      \show-string(stringlist-to-string [`11`; `22`]);
+      \show-string(stringlist2-to-string [[`11`; `22`]; [`11`; `22`]]);
+    }
+  >
+  +section{test2} <
+    +p {
+      \show-string(csvresult-to-stringlist csv-data);
+    }
+  >
+>
