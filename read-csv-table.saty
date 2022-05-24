@@ -1,0 +1,93 @@
+@require: stdjabook
+
+@require: base/result
+@require: csv/csv
+@require: easytable/easytable
+open EasyTableAlias
+
+let-inline \show-string s = embed-string s
+
+let csvresult-to-itlist r =
+  let-rec stringlist2-to-itlist l =
+    let-rec list-append l1 l2 =
+      match l1 with
+      | []      -> l2
+      | x :: xs -> x :: list-append xs l2
+      in
+    let-rec stringlist-to-itlist l =
+      match l with
+      | []      -> []
+      | x :: xs -> embed-string x :: stringlist-to-itlist xs 
+      in
+    match l with
+    | []      -> []
+    | x :: xs -> list-append (stringlist-to-itlist x) (stringlist2-to-itlist xs)
+    in
+  let csv-error-notify e =
+    let get-errormsg e =
+      match e with
+      | CSVParserErrorUnExpectedChar(i, s) ->
+          #`CSV parser error with char: `# ^ s ^ #` at `# ^ (arabic i)
+      | CSVParserErrorEOI ->
+          `CSV parser error (EOI)`  % i don't know what EOI means
+      in
+    (abort-with-message (get-errormsg e))
+    in
+  Result.map-or-else csv-error-notify stringlist2-to-itlist r
+
+let parse-raw-csv sl =
+  let-rec raw-csv-to-string sl =
+    match sl with
+    | []      -> ` `
+    | x :: xs -> x ^ `,` ^ (raw-csv-to-string xs)
+    in
+  CSV.parser (raw-csv-to-string sl)
+
+let csv = `1,2,3
+a,"b
+c",""d",e",f""`
+let csv-data = CSV.parser csv
+let csv-data2 = Ok([[`1`]])
+let csv3 = `1,a"foo".bar`
+let csv-data3 = CSV.parser csv3
+
+let rawcsv4 = read-file `./sample.csv`
+let csv-data4 = parse-raw-csv rawcsv4
+
+in
+
+document (|
+  title = {csv test 2};
+  author = {qwjyh};
+  show-title = true;
+  show-toc = true;
+|) '<
+  +section{} <
+    +p{
+      csv to table with wrong case
+    }
+  >
+  +section{} <
+    +p{
+      \easytable[l;c;r](csvresult-to-itlist csv-data);
+    }
+    +p{
+      \easytable[r](csvresult-to-itlist csv-data2);
+    }
+    +p{
+      \easytable[r;l;l;l;c](csvresult-to-itlist csv-data4);
+    }
+  >
+  +section{error case} <
+    % the line below evaluates error csv sample
+    +p{
+      % \easytable[l;c;r](csvresult-to-itlist csv-data3);
+    }
+  >
+  +section{} <
+    +p{
+      \show-string(`aa
+      aa`);
+    }
+  >
+>
