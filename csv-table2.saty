@@ -1,0 +1,86 @@
+@require: stdjabook
+
+@require: base/result
+@require: csv/csv
+@require: easytable/easytable
+open EasyTableAlias
+
+let-inline \show-string s = embed-string s
+
+let-rec stringlist2-to-string l =
+  let-rec stringlist-to-string l =
+    match l with
+    | []      -> ` `
+    | x :: xs -> x ^ (stringlist-to-string xs) in
+  match l with
+  | []      -> ` `
+  | x :: xs -> (stringlist-to-string x) ^ (stringlist2-to-string xs)
+
+let-rec stringlist2-to-itlist l =
+  let-rec list-append l1 l2 =
+    match l1 with
+    | []      -> l2
+    | x :: xs -> x :: list-append xs l2
+    in
+  let-rec stringlist-to-itlist l =
+    match l with
+    | []      -> []
+    | x :: xs -> embed-string x :: stringlist-to-itlist xs 
+    in
+  match l with
+  | []      -> []
+  | x :: xs -> list-append (stringlist-to-itlist x) (stringlist2-to-itlist xs)
+
+let csv-error-notify e =
+  let get-errormsg e =
+    match e with
+    | CSVParserErrorUnExpectedChar(i, s) ->
+        #`CSV parser error with char: `# ^ s ^ #` at `# ^ (arabic i)
+    | CSVParserErrorEOI ->
+        `CSV parser error (EOI)`  % i don't know what EOI means
+    in
+  (abort-with-message (get-errormsg e))
+
+let csvresult-to-stringlist r =
+  Result.map-or-else csv-error-notify stringlist2-to-string r
+
+let csvresult-to-itlist r =
+  Result.map-or-else csv-error-notify stringlist2-to-itlist r
+
+
+let csv = `1,2,3
+a,"b
+c",""d",e",f""`
+let csv-data = CSV.parser csv
+let csv-data2 = Ok([[`1`]])
+let csv3 = `1,a"foo".bar`
+let csv-data3 = CSV.parser csv3
+
+in
+
+document (|
+  title = {csv test 2};
+  author = {qwjyh};
+  show-title = true;
+  show-toc = true;
+|) '<
+  +section{} <
+    +p{
+      csv to table with wrong case
+    }
+  >
+  +section{} <
+    +p{
+      \easytable[l;c;r](csvresult-to-itlist csv-data);
+    }
+    +p{
+      \easytable[r](csvresult-to-itlist csv-data2);
+    }
+  >
+  +section{error case} <
+    % the line below evaluates error csv sample
+    +p{
+      % \easytable[l;c;r](csvresult-to-itlist csv-data3);
+    }
+  >
+>
