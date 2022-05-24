@@ -33,7 +33,7 @@ let-rec stringlist2-to-string l =
   | x :: xs -> (stringlist-to-string x) ^ (stringlist2-to-string xs)
 
 let map-or-test2 r =
-  Result.map-or `it's error` stringlist2-to-string r
+  Result.map-or (panic `error at CSV parser`) stringlist2-to-string r
 
 in
 
@@ -69,7 +69,7 @@ document (|
     }
     +p {
       \show-string(map-or-test2 result3);
-      \show-string(map-or-test2 result4);
+      % \show-string(map-or-test2 result4);
     }
   >
 >

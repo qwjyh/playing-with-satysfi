@@ -1,0 +1,86 @@
+@require: stdjabook
+
+@require: base/result
+@require: csv/csv
+@require: easytable/easytable
+open EasyTableAlias
+
+let-inline \show-string s = embed-string s
+
+let csv = `1,2,3
+a,"b
+c",""d",e",f""`
+% let csv = ` `
+let csv2 = `,2,3
+4,5,5`
+let csv-data = CSV.parser csv
+% =>
+%Ok([
+%  [`1`; `2`; `3`];
+%  [`a`; `b
+%c`; `d",e",f`]
+%])
+let csv-data2 = CSV.parser csv2
+
+let-rec stringlist2-to-string l =
+  let-rec stringlist-to-string l =
+    match l with
+    | []      -> ` `
+    | x :: xs -> x ^ (stringlist-to-string xs) in
+  match l with
+  | []      -> ` `
+  | x :: xs -> (stringlist-to-string x) ^ (stringlist2-to-string xs)
+
+let csvresult-to-stringlist r =
+  Result.map-or `error` stringlist2-to-string r
+
+let-rec list-append l1 l2 =
+  match l1 with
+  | []      -> l2
+  | x :: xs -> x :: list-append xs l2
+
+let-rec stringlist2-to-itlist l =
+  let-rec stringlist-to-itlist l =
+    match l with
+    | []      -> []
+    | x :: xs -> embed-string x :: stringlist-to-itlist xs in
+  match l with
+  | []      -> []
+  | x :: xs -> list-append (stringlist-to-itlist x) (stringlist2-to-itlist xs)
+
+let csvresult-to-itlist r =
+  % Result.map-or (panic `error at CSV parser`) stringlist2-to-itlist r
+  Result.map-or [{a}; {b}; {c}] stringlist2-to-itlist r
+
+let csv-itlist = csvresult-to-itlist csv-data
+
+in
+
+document (|
+  title = {csv-table test};
+  author = {qwjyh};
+  show-title = true;
+  show-toc = true;
+|) '<
+  +section{test csv} <
+    +p {
+      \show-string(csvresult-to-stringlist(csv-data));
+    }
+  >
+  +section{test} <
+    +p {
+      \easytable[l;c;r]{
+        | header1  | header2  | header3
+        | align left | align center | align right
+        | a | b | c
+      |}
+    }
+    +p {
+      \easytable[l;c;r](csv-itlist);
+    }
+    +p {
+      \easytable[c;c;c](csvresult-to-itlist csv-data2);
+    }
+
+  >
+>
