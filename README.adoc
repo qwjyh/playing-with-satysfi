@@ -17,3 +17,14 @@ read-csv-table::
 
 == LICENSE
 MIT License
+
+== TODO
+* `.satyh`化
+* csvファイルの列の最大値を自動的にtableの横幅にする
+** デフォルトはrで上書きできるオプション変数
+*** または数値はr, 他はcとか
+** `read-file`, `CSV.parser`, `easytable` を1つにする
+** `csv-table ?[cellfmt] file-path`
+** `CSV.parser` の `"` で改行文字も含められる機能は使わない
+* 改行文字を入れられるか？
+** 最悪CSVのコードを参考に自前で組む？
