@@ -23,6 +23,9 @@ let csv-data = CSV.parser csv
 
 let csv-data2 = Ok([[`1`]])
 
+let csv3 = `1,a"foo".bar`
+let csv-data3 = CSV.parser csv3
+
 
 let-inline \show-float x = embed-string (show-float x) 
 let-inline \show-string s = embed-string s
@@ -66,7 +69,8 @@ let-rec stringlist2-to-string l =
 let csvresult-to-stringlist r =
   Result.map-or `error` stringlist2-to-string r
 
-
+% let csvresult-to-stringlist2 r =
+%   Result.unwrap-or-else (abort-with-message `error at CSV parser`) 
 
 
 in
@@ -98,6 +102,9 @@ document (|
   +section{test2} <
     +p {
       \show-string(csvresult-to-stringlist csv-data);
+    }
+    +p {
+      \show-string(csvresult-to-stringlist csv-data3);
     }
   >
 >

@@ -69,7 +69,7 @@ document (|
     }
     +p {
       \show-string(map-or-test2 result3);
-      % \show-string(map-or-test2 result4);
+      \show-string(map-or-test2 result4);
     }
   >
 >
