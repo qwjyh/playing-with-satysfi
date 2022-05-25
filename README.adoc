@@ -19,7 +19,7 @@ read-csv-table::
 MIT License
 
 == TODO
-* `.satyh`化
+* [.line-through]#`.satyh`化#
 * csvファイルの列の最大値を自動的にtableの横幅にする
 ** デフォルトはrで上書きできるオプション変数
 *** または数値はr, 他はcとか
