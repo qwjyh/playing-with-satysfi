@@ -1,0 +1,56 @@
+@require: base/result
+@require: csv/csv
+@require: easytable/easytable
+open EasyTableAlias
+
+module CsvTable :sig
+
+  val csv-to-itlist: string -> inline-text list
+  direct \csvtable: [string] inline-cmd
+
+end = struct
+  let parse-raw-csv sl =
+    let-rec raw-csv-to-string sl =
+      match sl with
+      | []      -> ` `
+      | x :: xs -> x ^ `,` ^ (raw-csv-to-string xs)
+      in
+    CSV.parser (raw-csv-to-string sl)
+  let csvresult-to-itlist r =
+    let-rec stringlist2-to-itlist l =
+      let-rec list-append l1 l2 =
+        match l1 with
+        | []      -> l2
+        | x :: xs -> x :: list-append xs l2
+        in
+      let-rec stringlist-to-itlist l =
+        match l with
+        | []      -> []
+        | x :: xs -> embed-string x :: stringlist-to-itlist xs 
+        in
+      match l with
+      | []      -> []
+      | x :: xs -> list-append (stringlist-to-itlist x) (stringlist2-to-itlist xs)
+      in
+    let csv-error-notify e =
+      let get-errormsg e =
+        match e with
+        | CSVParserErrorUnExpectedChar(i, s) ->
+            #`CSV parser error with char: `# ^ s ^ #` at `# ^ (arabic i)
+        | CSVParserErrorEOI ->
+            `CSV parser error (EOI)`  % i don't know what EOI means
+        in
+      (abort-with-message (get-errormsg e))
+      in
+    Result.map-or-else csv-error-notify stringlist2-to-itlist r
+
+  let csv-to-itlist s =
+    s |> read-file
+      |> parse-raw-csv
+      |> csvresult-to-itlist
+    
+
+  let-inline \csvtable s =
+    {\easytable[c;c](csv-to-itlist s);}
+
+end

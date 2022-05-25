@@ -77,6 +77,9 @@ document (|
     +p{
       \easytable[r;l;l;l;c](csvresult-to-itlist csv-data4);
     }
+    +p{
+      \easytable[c](`./sample2.csv` |> read-file |> parse-raw-csv |> csvresult-to-itlist);
+    }
   >
   +section{error case} <
     % the line below evaluates error csv sample

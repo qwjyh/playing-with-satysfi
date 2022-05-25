@@ -1,0 +1,27 @@
+@require: stdjabook
+
+@import: csvtable
+
+document (|
+  title = {test csvtable};
+  author = {qwjyh};
+  show-title = true;
+  show-toc = true;
+|) '<
+  +section{} <
+    +p{
+      \easytable[c;c;c;c;c](CsvTable.csv-to-itlist `./sample2.csv`);
+    }
+    +p{
+      \easytable[c;c;c;c;c](CsvTable.csv-to-itlist `./sample.csv`);
+    }
+  >
+  +section{using \\csvtable}<
+    +p{
+      \csvtable(`./sample.csv`);
+    }
+    +p{
+      \csvtable(`./sample2.csv`);
+    }
+  >
+>
