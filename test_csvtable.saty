@@ -4,6 +4,7 @@
 
 let-inline \show-int n = embed-string (arabic n)
 
+let-block ctx +new-page = clear-page 
 
 in
 
@@ -29,15 +30,20 @@ document (|
       \csvtable(`./sample2.csv`);
     }
     +p{
-      \csvtable?:[r;c;r;c;l;c](`./sample3.csv`);
+      \csvtable?:[t;b;m 1]?:[r;c;r;c;l;c](`./sample3.csv`);
     }
     +p{
       \show-int(CsvTable.csv-width `./sample.csv`);
     }
     +p{
-      \csvtable?:[r;c;l](`./sample4.csv`);
-      \csvtable(`./sample4.csv`);
+      \csvtable?*?:[r;c;l](`./sample4.csv`);
+      \csvtable?:[rect]?:[r;r;r](`./sample4.csv`);
+    }
+    +p{
+      \csvtable?:[t;b;m 1]?:[lw 240pt; r](`./sample5.csv`);
     }
   >
   +csvtable(`./sample.csv`);
+  +new-page;
+  +csvtable?:[b;m 2]?:[l;l;r;r; cw 120pt; c](`./sample3.csv`);
 >
