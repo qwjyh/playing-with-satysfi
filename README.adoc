@@ -19,12 +19,14 @@ read-csv-table::
 MIT License
 
 == TODO
+* CSVの横が足りない場合に埋める処理
+** `itlist2d-to-itlist` を改良
 * [.line-through]#`.satyh`化#
-* csvファイルの列の最大値を自動的にtableの横幅にする
-** デフォルトはrで上書きできるオプション変数
+* [.line-through]#csvファイルの列の最大値を自動的にtableの横幅にする#
+** [.line-through]#デフォルトはrで上書きできるオプション変数#
 *** または数値はr, 他はcとか
-** `read-file`, `CSV.parser`, `easytable` を1つにする
-** `csv-table ?[cellfmt] file-path`
+** [.line-through]#`read-file`, `CSV.parser`, `easytable` を1つにする#
+** [.line-through]#`csv-table ?[cellfmt] file-path`#
 ** `CSV.parser` の `"` で改行文字も含められる機能は使わない
 * 改行文字を入れられるか？
 ** 最悪CSVのコードを参考に自前で組む？

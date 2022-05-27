@@ -29,6 +29,8 @@ end = struct
     | []      -> []
     | x :: xs -> embed-string x :: stringlist-to-itlist xs 
   
+  % [[string]] -> string
+  % (string list) list -> string list
   let-rec stringlist-at0-to-itlist l =
     match l with
     | []      -> []
@@ -64,11 +66,13 @@ end = struct
   let csvresult-to-slist r =
     Result.map-or-else csv-error-notify stringlist-at0-to-itlist r
 
+  % string -> (inline-text list) list
   let-rec parse-readcsv-to-itlist sl =
     match sl with
     | []      -> []
     | x :: xs -> (csvresult-to-slist (CSV.parser x)) :: parse-readcsv-to-itlist xs
   
+  % (inline-text list) list -> inline-text list
   let-rec itlist2d-to-itlist l =
     match l with
     | []      -> []
