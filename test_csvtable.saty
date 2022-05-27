@@ -39,4 +39,5 @@ document (|
       \csvtable(`./sample4.csv`);
     }
   >
+  +csvtable(`./sample.csv`);
 >

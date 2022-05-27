@@ -12,6 +12,7 @@ module CsvTable :sig
   val csv-width: string -> int
 
   direct \csvtable: [(cellfmt list)?; string] inline-cmd
+  direct +csvtable: [(cellfmt list)?; string] block-cmd
 
 end = struct
 
@@ -93,5 +94,11 @@ end = struct
     let slist = s |> read-file |> parse-readcsv-to-itlist in
     let cellfmts = cfmlst |> Option.from (make-cellfmtlist (get-maxlistlength-2dlist slist) r) in
     read-inline ctx {\easytable (cellfmts) (itlist2d-to-itlist slist);} 
+
+  % [string] block-cmd
+  let-block ctx +csvtable ?:cfmlst s =
+    let slist = s |> read-file |> parse-readcsv-to-itlist in
+    let cellfmts = cfmlst |> Option.from (make-cellfmtlist (get-maxlistlength-2dlist slist) r) in
+    read-block ctx '<+easytable (cellfmts) (itlist2d-to-itlist slist);>
 
 end
