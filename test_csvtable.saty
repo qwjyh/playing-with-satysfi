@@ -2,6 +2,11 @@
 
 @import: csvtable
 
+let-inline \show-int n = embed-string (arabic n)
+
+
+in
+
 document (|
   title = {test csvtable};
   author = {qwjyh};
@@ -22,6 +27,12 @@ document (|
     }
     +p{
       \csvtable(`./sample2.csv`);
+    }
+    +p{
+      \csvtable(`./sample3.csv`);
+    }
+    +p{
+      \show-int(CsvTable.csv-width `./sample.csv`);
     }
   >
 >
