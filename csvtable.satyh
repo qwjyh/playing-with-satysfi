@@ -1,3 +1,4 @@
+@require: option
 @require: base/result
 @require: base/int
 @require: base/list-ext
@@ -10,7 +11,7 @@ module CsvTable :sig
   val csv-to-itlist: string -> inline-text list
   val csv-width: string -> int
 
-  direct \csvtable: [string] inline-cmd
+  direct \csvtable: [(cellfmt list)?; string] inline-cmd
 
 end = struct
 
@@ -88,9 +89,9 @@ end = struct
       |> get-maxlistlength-2dlist
 
   % [string] inline-cmd
-  let-inline \csvtable s =
+  let-inline ctx \csvtable ?:cfmlst s =
     let slist = s |> read-file |> parse-readcsv-to-itlist in
-    let cellfmts = make-cellfmtlist (get-maxlistlength-2dlist slist) r in
-    {\easytable (cellfmts) (itlist2d-to-itlist slist);} 
+    let cellfmts = cfmlst |> Option.from (make-cellfmtlist (get-maxlistlength-2dlist slist) r) in
+    read-inline ctx {\easytable (cellfmts) (itlist2d-to-itlist slist);} 
 
 end

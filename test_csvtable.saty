@@ -29,10 +29,14 @@ document (|
       \csvtable(`./sample2.csv`);
     }
     +p{
-      \csvtable(`./sample3.csv`);
+      \csvtable?:[r;c;r;c;l;c](`./sample3.csv`);
     }
     +p{
       \show-int(CsvTable.csv-width `./sample.csv`);
+    }
+    +p{
+      \csvtable?:[r;c;l](`./sample4.csv`);
+      \csvtable(`./sample4.csv`);
     }
   >
 >
