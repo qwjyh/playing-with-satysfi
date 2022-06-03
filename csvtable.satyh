@@ -27,7 +27,12 @@ end = struct
   let-rec stringlist-to-itlist l =
     match l with
     | []      -> []
-    | x :: xs -> embed-string x :: stringlist-to-itlist xs 
+    | x :: xs -> embed-string x :: stringlist-to-itlist xs
+  
+  let-rec stringlist2-to-itlist2 l =
+    match l with
+    | []      -> []
+    | x :: xs -> (stringlist-to-itlist x) :: stringlist2-to-itlist2 xs
   
   % [[string]] -> string
   % (string list) list -> string list
@@ -64,19 +69,33 @@ end = struct
 
   % ((string list) list) csv-parser-error result -> Any -> inline-text list
   let csvresult-to-itlist r =
-    Result.map-or-else csv-error-notify stringlist-at0-to-itlist r
+    Result.map-or-else csv-error-notify stringlist2-to-itlist2 r
 
-  % string -> (inline-text list) list
-  let-rec parse-readcsv-to-itlist sl =
-    match sl with
-    | []      -> []
-    | x :: xs -> (csvresult-to-itlist (CSV.parser x)) :: parse-readcsv-to-itlist xs
+  % % string -> (inline-text list) list
+  % let-rec parse-readcsv-to-itlist sl =
+  %   match sl with
+  %   | []      -> []
+  %   | x :: xs -> (csvresult-to-itlist (CSV.parser x)) :: parse-readcsv-to-itlist xs
   
   % ('a list) list -> 'a list
   let-rec list2d-to-list l =
     match l with
     | []      -> []
     | x :: xs -> List.append x (list2d-to-list xs)
+
+
+  let-rec slist-to-string sl =
+    match sl with
+    | []      -> ` `
+    | x :: xs -> x ^ #```
+    
+    ```# ^ (slist-to-string xs)
+
+  let parse-readcsv-to-itlist sl =
+    let csvstring = slist-to-string sl in
+    let parsed-itlist = csvresult-to-itlist (CSV.parser csvstring) in
+    parsed-itlist
+
 
 
   % provided functions
