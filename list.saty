@@ -1,0 +1,38 @@
+@require: stdjabook
+@require: base/list-ext
+
+let numlist0 ls =
+  let len = List.length ls in
+  let-rec numlist ls = 
+    match ls with
+    | []      -> []
+    | x :: xs -> arabic (len - List.length xs) :: numlist xs
+    in
+  numlist ls
+
+let-inline \show-stringlist ls =
+  let-rec s ls =
+    match ls with
+    | []      -> ` `
+    | x :: xs -> x ^ s xs
+    in
+  embed-string (s ls)
+
+let list1 = [`1`;`2`;`3`;`aa`;`bb`]
+
+let-inline \show-float x = embed-string (show-float x) 
+
+in
+
+document (|
+  title = {list};
+  author = {qwjyh};
+  show-title = true;
+  show-toc = true;
+|) '<
+  +section{a}<
+    +p{
+      \show-stringlist(numlist0 list1);
+    }
+  >
+>

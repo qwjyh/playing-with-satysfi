@@ -43,11 +43,11 @@ end = struct
       | x :: xs -> Int.max (List.length x) (get-maxlistlength-2dlist xs)
   
   % 'a csv-parser-error result -> Any
-  let csv-error-notify e =
+  let csv-error-notify row-n e =
       let get-errormsg e =
         match e with
         | CSVParserErrorUnExpectedChar(i, s) ->
-            #`CSV parser error with char: `# ^ s ^ #` at `# ^ (arabic i)
+            #`CSV parser error with char: `# ^ s ^ #` at `# ^ (arabic row-n) ^ #`, `# ^ (arabic i)
         | CSVParserErrorEOI ->
             `CSV parser error (EOI)`  % i don't know what EOI means
         in
@@ -63,14 +63,18 @@ end = struct
     CSV.parser (raw-csv-to-string sl)
 
   % ((string list) list) csv-parser-error result -> Any -> inline-text list
-  let csvresult-to-itlist r =
-    Result.map-or-else csv-error-notify stringlist-at0-to-itlist r
+  let csvresult-to-itlist row-n r =
+    Result.map-or-else (csv-error-notify row-n) stringlist-at0-to-itlist r
 
-  % string -> (inline-text list) list
-  let-rec parse-readcsv-to-itlist sep-opt sl =
-    match sl with
-    | []      -> []
-    | x :: xs -> (csvresult-to-itlist (CSV.parser ?:sep-opt x)) :: parse-readcsv-to-itlist sep-opt xs
+  % string list -> (inline-text list) list
+  let parse-readcsv-to-itlist sep-opt sl =
+    let height = List.length sl in
+    let-rec rec-parse-readcsv-to-itlist sep-opt sl =
+      match sl with
+      | []      -> []
+      | x :: xs -> (csvresult-to-itlist (height - (List.length xs)) (CSV.parser ?:sep-opt x)) :: rec-parse-readcsv-to-itlist sep-opt xs
+      in
+    rec-parse-readcsv-to-itlist sep-opt sl
   
   % ('a list) list -> 'a list
   let-rec list2d-to-list l =
