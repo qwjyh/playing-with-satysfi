@@ -46,4 +46,5 @@ document (|
   +csvtable(`./sample.csv`);
   +new-page;
   +csvtable?:[b;m 2]?:[l;l;r;r; cw 120pt; c](`./sample3.csv`);
+  +csvtable?:[rect]?*?:(#` `#)(`./sample6.csv`);
 >

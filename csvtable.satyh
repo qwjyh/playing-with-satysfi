@@ -8,11 +8,11 @@ open EasyTableAlias
 
 module CsvTable :sig
 
-  val csv-to-itlist: string -> inline-text list
-  val csv-width: string -> int
+  val csv-to-itlist: string ?-> string -> inline-text list
+  val csv-width: string ?-> string -> int
 
-  direct \csvtable: [(ruleptn list)?; (cellfmt list)?; string] inline-cmd
-  direct +csvtable: [(ruleptn list)?; (cellfmt list)?; string] block-cmd
+  direct \csvtable: [(ruleptn list)?; (cellfmt list)?; string?; string] inline-cmd
+  direct +csvtable: [(ruleptn list)?; (cellfmt list)?; string?; string] block-cmd
 
 end = struct
 
@@ -67,10 +67,10 @@ end = struct
     Result.map-or-else csv-error-notify stringlist-at0-to-itlist r
 
   % string -> (inline-text list) list
-  let-rec parse-readcsv-to-itlist sl =
+  let-rec parse-readcsv-to-itlist sep-opt sl =
     match sl with
     | []      -> []
-    | x :: xs -> (csvresult-to-itlist (CSV.parser x)) :: parse-readcsv-to-itlist xs
+    | x :: xs -> (csvresult-to-itlist (CSV.parser ?:sep-opt x)) :: parse-readcsv-to-itlist sep-opt xs
   
   % ('a list) list -> 'a list
   let-rec list2d-to-list l =
@@ -91,20 +91,35 @@ end = struct
   % provided functions
 
   % string -> inline-text list
-  let csv-to-itlist s =
+  let csv-to-itlist ?:sep-opt s =
+    let separator =
+      match sep-opt with
+      | Some(s) -> s
+      | None    -> `,`
+      in
     s |> read-file
-      |> parse-readcsv-to-itlist
+      |> parse-readcsv-to-itlist separator
       |> list2d-to-list
 
   % string -> int
-  let csv-width s =
+  let csv-width ?:sep-opt s =
+    let separator =
+      match sep-opt with
+      | Some(s) -> s
+      | None    -> `,`
+      in
     s |> read-file
-      |> parse-readcsv-to-itlist
+      |> parse-readcsv-to-itlist separator
       |> get-maxlistlength-2dlist
 
   % [string] inline-cmd
-  let-inline ctx \csvtable ?:rules-list-opt ?:cfmlst s =
-    let itlist = s |> read-file |> parse-readcsv-to-itlist in
+  let-inline ctx \csvtable ?:rules-list-opt ?:cfmlst ?:sep-opt s =
+    let separator =
+      match sep-opt with
+      | Some(s) -> s
+      | None    -> `,`
+      in
+    let itlist = s |> read-file |> parse-readcsv-to-itlist separator in
     let listwidth = get-maxlistlength-2dlist itlist in
     let cellfmts = cfmlst |> Option.from (make-cellfmtlist listwidth r) in
     let rules-list = rules-list-opt |> Option.from [t;b; m 1;] in
@@ -112,8 +127,13 @@ end = struct
     read-inline ctx {\easytable?:(rules-list) (cellfmts) (list2d-to-list filled-itlist);}
 
   % [string] block-cmd
-  let-block ctx +csvtable ?:rules-list-opt ?:cfmlst s =
-    let itlist = s |> read-file |> parse-readcsv-to-itlist in
+  let-block ctx +csvtable ?:rules-list-opt ?:cfmlst ?:sep-opt s =
+    let separator =
+      match sep-opt with
+      | Some(s) -> s
+      | None    -> `,`
+      in
+    let itlist = s |> read-file |> parse-readcsv-to-itlist separator in
     let listwidth = get-maxlistlength-2dlist itlist in
     let cellfmts = cfmlst |> Option.from (make-cellfmtlist listwidth r) in
     let rules-list = rules-list-opt |> Option.from [t;b; m 1;] in
