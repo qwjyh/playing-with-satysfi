@@ -1,0 +1,6 @@
+let-inline ctx \is-include-esc s =
+  let regexp = regexp-of-string `.*.*` in
+  if (string-match regexp s) then
+    read-inline ctx (embed-string `include esc`)
+  else
+    read-inline ctx (embed-string `no esc`)
