@@ -2,6 +2,8 @@
 
 @import: csvtable
 
+open EasyTableAlias
+
 let-inline \show-int n = embed-string (arabic n)
 
 let-block ctx +new-page = clear-page 
@@ -47,5 +49,11 @@ document (|
   +new-page;
   +csvtable?:[b;m 2]?:[l;l;r;r; cw 120pt; c](`./sample3.csv`);
   +csvtable?:[rect]?*?:(#` `#)(`./sample6.csv`);
+  +csvtable?:[rect]?*?:(#` `#)?:[{aaaa}; {${\frac{1}{2}}};](`./sample6.csv`);
+  +p{
+    \csvtable?:[rect]?*?:(#` `#)?:({
+      | header 1 | header 2 | ${header 3}
+    |})(`./sample6.csv`);
+  }
   % +csvtable(`./sample7.csv`);
 >
