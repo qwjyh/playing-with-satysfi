@@ -1,0 +1,110 @@
+@require: stdjabook
+@require: base/list-ext
+
+% let-block ctx +print-strmatrix smatrix = 
+%   % (string list) list -> inline-text list
+%   let-rec smatrix-to-itlist smatrix = 
+    
+  % 
+  % inline-boxes list -> block-boxes list
+  % block-boxes list -> block-boxes
+
+% % string list -> string
+% let-rec slist-to-s slist =
+%   match slist with
+%   | []      -> ` `
+%   | x :: xs -> (x ^ #` | `# ) ^ (slist-to-s xs)
+% in
+
+% % (string list) list -> string list
+% let-rec smatrix-to-slist smatrix =
+%   match smatrix with
+%   | []      -> []
+%   | x :: xs -> slist-to-s x :: smatrix-to-slist xs
+% in
+
+% % string list -> inline-text list
+% let-rec slist-to-itlist slist =
+%   match slist with
+%   | []      -> []
+%   | x :: xs -> embed-string x :: slist-to-itlist xs
+% in
+
+% % inline-text list -> inline-boxes list
+% let-rec itlist-to-iblist ctx itlist =
+%   match itlist with
+%   | []      -> []
+%   | x :: xs -> (read-inline ctx x) ++ inline-fil :: itlist-to-iblist ctx xs 
+% in
+
+% % inline-boxes list -> block-boxes
+% let-rec iblist-to-bb ctx iblist =
+%   match iblist with
+%   | []      -> block-nil
+%   | x :: xs -> (line-break true true ctx x) +++ (iblist-to-bb ctx xs)
+% in
+
+
+% print (string list) list
+let-block ctx +print-strmatrix smatrix = 
+  % (string list) list -> block-boxes
+  let-rec smatrix-to-bb ctx smatrix =
+    % string list -> string
+    let-rec slist-to-s slist =
+      match slist with
+      | []      -> ` `
+      | x :: xs -> (x ^ #` | `# ) ^ (slist-to-s xs)
+    in
+    let left-fill ib = ib ++ inline-fil in
+    % string list -> block-boxes
+    let slist-to-bb slist =
+      slist |> slist-to-s
+            |> embed-string
+            |> read-inline ctx
+            |> left-fill
+            |> line-break true true ctx
+    in
+    match smatrix with
+    | []      -> block-nil
+    | x :: xs -> (slist-to-bb x) +++ (smatrix-to-bb ctx xs)
+  in
+  smatrix-to-bb ctx smatrix
+
+let set-header headers itlistlist =
+  let replace-1st index source =
+    if index == 0 then
+      headers
+    else
+      source
+  in
+  List.mapi replace-1st itlistlist
+
+
+let smatrix1 =
+  [[`a`; `b`; `c`;];]
+
+let smatrix2 = [
+    [`a`; `b`; `c`;];
+    [`aa`; `bb`; `ccc`; `d`;];
+  ]
+
+let svector1 = [
+    `1`; `2`; `3`; `4`; `5`; `6`;
+  ]
+
+let smatrix3 =
+  set-header svector1 smatrix2
+
+in
+
+
+document (|
+  title = {listのテスト};
+  author = {qw};
+  show-title = true;
+  show-toc = true;
+|) '<
+  +print-strmatrix(smatrix1);
+  +print-strmatrix(smatrix2);
+  +print-strmatrix(smatrix3);
+>
