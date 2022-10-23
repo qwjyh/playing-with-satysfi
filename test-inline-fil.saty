@@ -1,0 +1,89 @@
+@require: stdjabook
+
+
+let-block ctx +test-block content = 
+  line-break true true ctx (inline-fil ++ (
+    read-inline ctx content
+  ) ++ inline-fil)
+
+let-block ctx +test-block2 content = 
+  line-break true true ctx ((
+    read-inline ctx content
+  ) ++ inline-fil)
+
+let-block ctx +test-block3 content = 
+  line-break true true ctx ((
+    read-inline ctx content
+  ) ++ inline-fil)
+
+let-inline ctx \get-len it = 
+  let ib = read-inline ctx it in
+  let width = match (get-natural-metrics ib) with
+  | (w, _, _) -> w
+  in
+  if width >' 440pt then
+    read-inline ctx (embed-string `long`)
+  else
+    read-inline ctx (embed-string `short`)
+
+in
+
+document (|
+  title = {inline-fil test};
+  author = {q};
+  show-title = true;
+  show-toc = true;
+|) '<
+  +p{
+    test
+  }
+  +test-block{
+    lorem ipsum
+  }
+  +p{
+    \get-len{
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt 
+    }
+  }
+  +test-block{
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt 
+  }
+  +test-block{
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud 
+  }
+  +test-block{
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi 
+  }
+  +test-block{
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
+  }
+  +test-block{
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+  }
+
+  +test-block2{
+    lorem ipsum
+  }
+  +test-block2{
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+  }
+  +test-block2{
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
+  }
+  +test-block2{
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+  }
+
+  +test-block3{
+    lorem ipsum
+  }
+  +test-block3{
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+  }
+  +test-block3{
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
+  }
+  +test-block3{
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+  }
+>
