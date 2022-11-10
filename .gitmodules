@@ -1,0 +1,3 @@
+[submodule "brackets/saty-util-local"]
+	path = brackets/saty-util-local
+	url = git@github.com:qwjyh/saty-util-local.git

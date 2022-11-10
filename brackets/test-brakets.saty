@@ -1,0 +1,26 @@
+@require: stdja
+
+@import: saty-util-local/brakets
+
+document (|
+  title = {brakets};
+  author = {qwjyh};
+  show-title = true;
+  show-toc = true;
+|) '<
+  +p{
+    test
+  }
+  +p{
+    ${\bra{\phi} \ket{\psi} \braket{\phi}{\psi}} 
+    ${\bra?:!(13pt){\phi} \ket?:!(13pt){\phi} \braket?:!(13pt){\phi}{x}}
+    ${\ketbra{\phi_n}{\psi_m} \ketbra{\phi_n}{\psi_m^N} \ketbra?:!(13pt){\phi_n}{\psi_m}}
+  }
+  +p{
+    ${\expval?*?:{\phi}{A} \expval?:!(13pt)?:{\phi}{A}}
+  }
+  +p{
+    ${\matrixel{n}{A}{m}}
+    ${\Brakets.mel?:!(13pt){n}{A}{m}}
+  }
+>
