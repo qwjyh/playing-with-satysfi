@@ -1,0 +1,73 @@
+@require: stdja
+
+@import: saty-util-local/lrparens
+
+document (|
+  title = {lrparens (Left/Right Parens)};
+  author = {qwjyh};
+  show-title = true;
+  show-toc = true;
+|) '<
+  +math-list(${
+    |\lp{\sin^x \cos^x}
+    |\rp{\sin^x \cos^x}
+  |});
+  +math-list(${
+    |\lp?:!(15pt){\sin^x \cos^x}
+    |\rp?:!(15pt){\sin^x \cos^x}
+  |});
+  +math-list(${
+    |\lpb{\sin^x \cos^x}
+    |\rpb{\sin^x \cos^x}
+  |});
+  +math-list(${
+    |\lpb?:!(15pt){\sin^x \cos^x}
+    |\rpb?:!(15pt){\sin^x \cos^x}
+  |});
+  +math-list(${
+    |\lpB{\sin^x \cos^x}
+    |\rpB{\sin^x \cos^x}
+  |});
+  +math-list(${
+    |\lpB?:!(15pt){\sin^x \cos^x}
+    |\rpB?:!(15pt){\sin^x \cos^x}
+  |});
+  +math-list(${
+    |\lpabs{\sin^x \cos^x}
+    |\rpabs{\sin^x \cos^x}
+  |});
+  +math-list(${
+    |\lpabs?:!(15pt){\sin^x \cos^x}
+    |\rpabs?:!(15pt){\sin^x \cos^x}
+  |});
+  +math-list(${
+    |\lpnorm{\sin^x \cos^x}
+    |\rpnorm{\sin^x \cos^x}
+  |});
+  +math-list(${
+    |\lpnorm?:!(15pt){\sin^x \cos^x}
+    |\rpnorm?:!(15pt){\sin^x \cos^x}
+  |});
+  +math-list(${
+    |\lpangle{\sin^x \cos^x}
+    |\rpangle{\sin^x \cos^x}
+  |});
+  +math-list(${
+    |\lpangle?:!(15pt){\sin^x \cos^x}
+    |\rpangle?:!(15pt){\sin^x \cos^x}
+  |});
+  +math-list(${
+    | \evaluated{\frac{\mathrm{d}f}{\mathrm{d}x}}_{x=0} = a   
+  |});
+  +math-list(
+    let-math \hbar = math-char MathOrd `ℏ` in
+    let-math \pdv ?:n f x =
+      match n with
+      | None -> ${\frac{\partial #f}{\partial #x}}
+      | Some(n) -> ${\frac{\partial^#n #f}{\partial #x^#n}}
+    in
+    ${
+      | \lpB{- \frac{\hbar^2}{2m} \p{\pdv?:{2}{}{x} + \pdv?:{2}{}{y} + \pdv?:{2}{}{z}} + V\p{\mathbf{x}}}
+    |}
+  );
+>
