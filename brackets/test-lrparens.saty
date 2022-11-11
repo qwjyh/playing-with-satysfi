@@ -67,7 +67,10 @@ document (|
       | Some(n) -> ${\frac{\partial^#n #f}{\partial #x^#n}}
     in
     ${
-      | \lpB{- \frac{\hbar^2}{2m} \p{\pdv?:{2}{}{x} + \pdv?:{2}{}{y} + \pdv?:{2}{}{z}} + V\p{\mathbf{x}}}
+      | \lpB?:!(24pt){- \frac{\hbar^2}{2m} \p{\frac{1}{r^2} \pdv{}{r} \p{r^2 \pdv{}{r}} + \frac{1}{r^2 \sin \theta} \pdv{}{\theta} \p{\sin \theta \pdv{}{\theta} + \frac{1}{r^2 \sin^2 \theta} \pdv{}{\phi}}} }
     |}
   );
+  +math-list(${
+    |\rpB?:!(24pt){+ V(r)} \Psi \p{x} = E \Psi \p{x}
+  |});
 >
